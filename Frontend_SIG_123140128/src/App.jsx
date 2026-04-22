@@ -1,61 +1,62 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
 import MapView from './components/MapView'
+import Login from './components/Login'
 import './App.css'
 
-function App() {
-  return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      height: '100vh', 
-      backgroundColor: '#1e272e', 
-      fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif' 
-    }}>
-      {}
-      <header style={{ 
-        backgroundColor: '#2f3640', 
-        color: '#f5f6fa', 
-        padding: '20px 30px', 
-        boxShadow: '0 4px 10px rgba(0,0,0,0.5)', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        zIndex: 1000 
-      }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: '600', letterSpacing: '1px' }}>📍 WebGIS Fasilitas Publik</h1>
-          <p style={{ margin: '5px 0 0 0', color: '#7f8fa6', fontSize: '14px' }}>Kawasan Way Huwi & ITERA</p>
-        </div>
-        <div style={{ 
-          backgroundColor: '#e1b12c', 
-          color: '#2f3640', 
-          padding: '8px 15px', 
-          borderRadius: '20px', 
-          fontWeight: 'bold', 
-          fontSize: '13px',
-          boxShadow: '0 2px 5px rgba(225, 177, 44, 0.4)'
-        }}>
-          Ragil Bayu (123140128)
-        </div>
-      </header>
+function ProtectedRoute({ children }) {
+  const { user } = useAuth()
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+  return children
+}
 
-      {}
-      <main style={{ 
-        flex: 1, 
-        padding: '20px', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center' 
-      }}>
-        <div style={{ 
-          width: '100%', 
-          height: '100%', 
-          borderRadius: '15px', 
-          overflow: 'hidden', 
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)', 
-          border: '3px solid #353b48' 
+function App() {
+  const { user, logout } = useAuth()
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#fdfdfd', fontFamily: 'sans-serif' }}>
+      
+      {user && (
+        <header style={{ 
+          backgroundColor: '#2c3e50', 
+          color: 'white', 
+          padding: '15px 30px', 
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          zIndex: 1000
         }}>
-          <MapView />
-        </div>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '22px' }}>🗺️ WebGIS Fasilitas Publik</h1>
+            <p style={{ margin: '5px 0 0 0', fontSize: '13px', color: '#bdc3c7' }}>{user.email}</p>
+          </div>
+          <button 
+            onClick={logout}
+            style={{ backgroundColor: '#e74c3c', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            Logout
+          </button>
+        </header>
+      )}
+
+      <main style={{ flex: 1, padding: user ? '20px' : '0' }}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                <div style={{ width: '100%', height: '100%', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 5px 15px rgba(0,0,0,0.15)', border: '1px solid #ddd' }}>
+                  <MapView />
+                </div>
+              </ProtectedRoute>
+            } 
+          />
+        </Routes>
       </main>
     </div>
   )
