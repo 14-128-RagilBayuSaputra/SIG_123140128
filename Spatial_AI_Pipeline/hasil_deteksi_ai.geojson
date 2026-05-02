@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.31939150482178,
+          -5.359649109954834
+        ]
+      },
+      "properties": {
+        "nama": "Objek AI: Bus",
+        "jenis": "Lainnya",
+        "confidence": 0.5879446268081665
+      }
+    }
+  ]
+}
